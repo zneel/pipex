@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:41:37 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/05/31 19:38:47 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/05/31 21:04:47 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,10 @@ int	parse_av(int ac, char **av, char **env, t_pipe *p)
 	p->ac = ac;
 	p->av = av;
 	p->env = env;
+	dup2(p->fd1, STDIN_FILENO);
+	dup2(p->fd2, STDOUT_FILENO);
 	return (0);
 }
-
 
 void	free_split(char **split)
 {
@@ -61,7 +62,7 @@ int	execute(char *full_cmd, char **env)
 	err = access(cmd[0], F_OK | X_OK) != 0;
 	if (err != 0)
 	{
-		perror("cannot execute command");
+		perror("command error");
 		exit(errno);
 	}
 	else
@@ -69,7 +70,7 @@ int	execute(char *full_cmd, char **env)
 		err = execve(cmd[0], cmd, env);
 		if (err)
 		{
-			perror(strerror(err));
+			perror("error");
 			free_split(cmd);
 			exit(errno);
 		}
@@ -78,56 +79,67 @@ int	execute(char *full_cmd, char **env)
 	}
 }
 
-void	exec_parent(t_pipe *p, char *full_cmd, int *fd)
-{
-	close(fd[1]);
-	dup2(fd[0], STDIN_FILENO);
-	execute(full_cmd, p->env);
-}
-
-void	exec_child(t_pipe *p, char *full_cmd, int *fd)
+void	close_pipe(int *fd)
 {
 	close(fd[0]);
-	dup2(fd[1], STDOUT_FILENO);
-	execute(full_cmd, p->env);
+	close(fd[1]);
 }
 
-void	do_shit(t_pipe *p)
+int	open_fork(void)
+{
+	int	pid;
+
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("error when forking");
+		return (pid);
+	}
+	return (pid);
+}
+
+void	pipe_commands(t_pipe *p)
 {
 	int		fd[2];
 	pid_t	pid;
 	int		i;
 
 	i = 2;
-	dup2(p->fd1, STDIN_FILENO);
-	dup2(p->fd2, STDOUT_FILENO);
-	while (i < p->ac - 1)
+	while (++i < p->ac - 2)
 	{
 		if (pipe(fd) == -1)
 			return ;
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("error when forking");
-			return ;
-		}
+		pid = open_fork();
+		if (pid < 0)
+			return (close_pipe(fd));
 		if (pid == 0)
-			exec_child(p, p->av[i], fd);
+		{
+			close(fd[0]);
+			dup2(fd[1], STDOUT_FILENO);
+			execute(p->av[i], p->env);
+		}
 		else
-			exec_parent(p, p->av[++i], fd);
-		close(fd[0]);
-		close(fd[1]);
+		{
+			close(fd[1]);
+			dup2(fd[0], STDIN_FILENO);
+		}
+		close_pipe(fd);
 	}
-	wait(NULL);
+	execute(p->av[i], p->env);
 }
 
 int	main(int ac, char **av, char **env)
 {
-	t_pipe	px;
+	t_pipe	p;
+	int		in;
 
+	in = dup(STDIN_FILENO);
 	check_args(ac);
-	if (parse_av(ac, av, env, &px) < 0)
+	if (parse_av(ac, av, env, &p) < 0)
 		exit(errno);
-	do_shit(&px);
+	pipe_commands(&p);
+	dup2(in, STDIN_FILENO);
+	close(p.fd1);
+	close(p.fd2);
 	return (0);
 }
