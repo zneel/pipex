@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:38:32 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/05/29 21:47:01 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/05/31 16:57:40 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,21 @@
 
 # include "libft.h"
 # include "lists.h"
+# include <errno.h>
+# include <fcntl.h>
+# include <stdio.h>
+# include <sys/stat.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 
 typedef struct s_pipe
 {
-	char	*file1;
-	char	*file2;
+	int		fd1;
+	int		fd2;
 	char	*limiter;
-	t_list	*cmds;
+	int		ac;
+	char	**av;
+	char	**env;
 }			t_pipe;
 
 # include "libft.h"
