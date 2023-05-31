@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:41:37 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/05/31 19:03:17 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/05/31 19:38:47 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	print_usage(void)
 
 void	check_args(int ac)
 {
-	if (ac != 5)
+	if (ac < 5)
 	{
 		print_usage();
 		exit(0);
@@ -41,11 +41,6 @@ int	parse_av(int ac, char **av, char **env, t_pipe *p)
 	return (0);
 }
 
-void	close_2(int fd[2])
-{
-	close(fd[0]);
-	close(fd[1]);
-}
 
 void	free_split(char **split)
 {
@@ -57,66 +52,44 @@ void	free_split(char **split)
 	free(split);
 }
 
-char	*get_cmd(char *command)
+int	execute(char *full_cmd, char **env)
 {
-	char	**cmd_w_args;
-	char	*cmd;
+	char	**cmd;
+	int		err;
 
-	cmd_w_args = ft_split(command, " ");
-	if (!cmd_w_args)
-		return (NULL);
-	cmd = ft_strdup(cmd_w_args[0]);
-	if (!cmd)
-		return (free_split(cmd_w_args), NULL);
-	return (free_split(cmd_w_args), cmd);
+	cmd = ft_split(full_cmd, " ");
+	err = access(cmd[0], F_OK | X_OK) != 0;
+	if (err != 0)
+	{
+		perror("cannot execute command");
+		exit(errno);
+	}
+	else
+	{
+		err = execve(cmd[0], cmd, env);
+		if (err)
+		{
+			perror(strerror(err));
+			free_split(cmd);
+			exit(errno);
+		}
+		free_split(cmd);
+		exit(0);
+	}
 }
 
 void	exec_parent(t_pipe *p, char *full_cmd, int *fd)
 {
-	int		err;
-	char	**cmd;
-
-	cmd = ft_split(full_cmd, " ");
-	err = access(cmd[0], F_OK | X_OK) != 0;
-	if (err != 0)
-	{
-		perror("cannot execute command");
-		return (free_split(cmd));
-	}
-	else
-	{
-		close(fd[1]);
-		dup2(fd[0], STDIN_FILENO);
-		err = execve(cmd[0], cmd, p->env);
-		if (err)
-			perror(strerror(err));
-		free_split(cmd);
-	}
+	close(fd[1]);
+	dup2(fd[0], STDIN_FILENO);
+	execute(full_cmd, p->env);
 }
 
 void	exec_child(t_pipe *p, char *full_cmd, int *fd)
 {
-	int		err;
-	char	**cmd;
-
-	cmd = ft_split(full_cmd, " ");
-	if (!cmd || !cmd[0])
-		return ;
-	err = access(cmd[0], F_OK | X_OK) != 0;
-	if (err != 0)
-	{
-		perror("cannot execute command");
-		return (free_split(cmd));
-	}
-	else
-	{
-		close(fd[0]);
-		dup2(fd[1], STDOUT_FILENO);
-		err = execve(cmd[0], cmd, p->env);
-		if (err)
-			perror(strerror(err));
-		free_split(cmd);
-	}
+	close(fd[0]);
+	dup2(fd[1], STDOUT_FILENO);
+	execute(full_cmd, p->env);
 }
 
 void	do_shit(t_pipe *p)
@@ -152,9 +125,9 @@ int	main(int ac, char **av, char **env)
 {
 	t_pipe	px;
 
-	// check_args(ac);
+	check_args(ac);
 	if (parse_av(ac, av, env, &px) < 0)
-		exit(1);
+		exit(errno);
 	do_shit(&px);
 	return (0);
 }
