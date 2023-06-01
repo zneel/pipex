@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 08:56:11 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/01 16:54:18 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/01 18:16:27 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,22 +33,6 @@ int	execute(char *full_cmd, char **env)
 	exit(0);
 }
 
-int	add_child(pid_t pid, t_list **child_lst)
-{
-	pid_t	*pid_ptr;
-	t_list	*new_node;
-
-	pid_ptr = malloc(sizeof(pid_t));
-	if (!pid_ptr)
-		return (-1);
-	*pid_ptr = pid;
-	new_node = ft_lstnew(pid_ptr);
-	if (!new_node)
-		return (free(pid_ptr), -1);
-	ft_lstadd_back(child_lst, new_node);
-	return (1);
-}
-
 int	do_fork(void)
 {
 	pid_t	pid;
@@ -66,48 +50,40 @@ void	child(int fd[2], char *full_cmd, char **env)
 	execute(full_cmd, env);
 }
 
-void	parent(int fd[2], pid_t pid, t_list **child_lst)
+void	wait_all_childs(int child_count)
 {
-	if (add_child(pid, child_lst) == -1)
-		return (free_child_exit(child_lst, fd));
-	close(fd[1]);
-	dup2(fd[0], STDIN_FILENO);
-}
+	int	i;
 
-void	wait_all_childs(t_list *child_lst)
-{
-	while (child_lst)
-	{
-		ft_printf("waiting:%d\n", *(int *)child_lst->content);
-		waitpid(*(int *)child_lst->content, NULL, 0);
-		child_lst = child_lst->next;
-	}
+	i = 0;
+	while (i++ < child_count)
+		wait(NULL);
 }
 
 void	pipe_commands(t_pipe *p)
 {
 	int		fd[2];
-	t_list	*child_lst;
 	pid_t	pid;
 	int		i;
 
 	i = 2;
-	child_lst = NULL;
+	fd[0] = 0;
+	fd[1] = 0;
 	while (i < p->ac - 1)
 	{
-		if (pipe(fd) == -1)
+		if (i < p->ac - 2 && pipe(fd) == -1)
 			return ;
 		pid = do_fork();
 		if (pid == -1)
-			return (free_child_exit(&child_lst, fd));
+			return (exit_error(fd));
 		if (pid == 0)
 			child(fd, p->av[i], p->env);
 		else
 		{
-			parent(fd, pid, &child_lst);
+			close(fd[1]);
+			dup2(fd[0], STDIN_FILENO);
 			i++;
 		}
+		close_pipe(fd);
 	}
-	wait_all_childs(child_lst);
-	ft_lstclear(&child_lst, free);
+	wait_all_childs(i - 2);
 }

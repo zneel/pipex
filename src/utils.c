@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 08:57:24 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/01 16:35:55 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/01 16:58:24 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,8 @@ void	free_split(char **cmd)
 	free(cmd);
 }
 
-void	free_child_exit(t_list **child_lst, int fd[2])
+void	exit_error(int fd[2])
 {
-	ft_lstclear(child_lst, free);
 	close_pipe(fd);
 	exit(errno);
 }
