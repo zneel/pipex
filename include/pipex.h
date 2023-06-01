@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:38:32 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/01 10:49:35 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/01 16:35:53 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,6 @@ void		pipe_commands(t_pipe *p);
 void		close_pipe(int *fd);
 void		free_split(char **cmd);
 char		**get_cmd(char *full_cmd, char **env);
+void		free_child_exit(t_list **child_lst, int fd[2]);
 
 #endif
