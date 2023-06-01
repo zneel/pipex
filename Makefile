@@ -8,7 +8,9 @@ INCLUDES = -Iinclude -Ilibft/includes
 SRC =	src/main.c \
 		src/path.c \
 		src/pipe.c \
-		src/utils.c
+		src/utils.c \
+		src/commands.c \
+		src/execute.c \
 
 OBJ = $(SRC:.c=.o)
 LIBRARY = libft/libft.a

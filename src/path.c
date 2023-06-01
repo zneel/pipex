@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 08:42:07 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/01 11:37:24 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/01 21:56:36 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,12 @@ char	*join_cmd(char *cmd, char **env)
 	return (NULL);
 }
 
-char	**get_cmd(char *full_cmd, char **env)
+char	**get_cmd(char *raw_cmd, char **env)
 {
 	char	**cmd;
 	char	*pathed_cmd;
 
-	cmd = ft_split(full_cmd, " ");
+	cmd = ft_split(raw_cmd, " ");
 	if (!cmd || !*cmd)
 		return (NULL);
 	if (test_cmd(cmd[0]))
@@ -86,7 +86,6 @@ char	**get_cmd(char *full_cmd, char **env)
 	pathed_cmd = join_cmd(cmd[0], env);
 	if (!pathed_cmd)
 	{
-		perror("command error");
 		free_split(cmd);
 		return (NULL);
 	}
