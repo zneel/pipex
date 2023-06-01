@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 08:56:11 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/01 11:18:17 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/01 11:52:15 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int	execute(char *full_cmd, char **env)
 	if (!cmd || !*cmd)
 		error_exit("command not found");
 	err = execve(cmd[0], cmd, env);
+	free_split(cmd);
 	if (err == -1)
 		error_exit("error executing command");
 	exit(0);

@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:41:37 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/01 08:56:25 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/01 11:52:21 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	print_usage(void)
 
 void	check_args(int ac)
 {
-	if (ac < 5)
+	if (ac != 5)
 	{
 		print_usage();
 		exit(0);

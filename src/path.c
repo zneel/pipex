@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 08:42:07 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/01 11:03:47 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/01 11:37:24 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ char	*join_cmd(char *cmd, char **env)
 			good_cmd = get_good_cmd(paths, cmd);
 			if (good_cmd)
 				return (free_split(paths), good_cmd);
+			return(free_split(paths), NULL);
 		}
 		i++;
 	}
