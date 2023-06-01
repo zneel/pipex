@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 08:56:11 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/01 18:16:27 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/01 19:02:42 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,9 @@ int	do_fork(void)
 
 void	child(int fd[2], char *full_cmd, char **env)
 {
-	close(fd[0]);
 	dup2(fd[1], STDOUT_FILENO);
+	close(fd[1]);
+	close(fd[0]);
 	execute(full_cmd, env);
 }
 
@@ -56,8 +57,17 @@ void	wait_all_childs(int child_count)
 
 	i = 0;
 	while (i++ < child_count)
-		wait(NULL);
+		waitpid(-1, 0, 0);
 }
+
+// int		new_command(t_pipe *p, int fd[2])
+// {
+// 	pid_t pid;
+// 	if (pipe(fd) != 0)
+// 		return (-1);
+// 	pid = do_fork();
+	
+// }
 
 void	pipe_commands(t_pipe *p)
 {
@@ -70,8 +80,9 @@ void	pipe_commands(t_pipe *p)
 	fd[1] = 0;
 	while (i < p->ac - 1)
 	{
-		if (i < p->ac - 2 && pipe(fd) == -1)
-			return ;
+		if (i < p->ac - 2)
+			if (pipe(fd) == -1)
+				return ;
 		pid = do_fork();
 		if (pid == -1)
 			return (exit_error(fd));
@@ -79,11 +90,11 @@ void	pipe_commands(t_pipe *p)
 			child(fd, p->av[i], p->env);
 		else
 		{
-			close(fd[1]);
 			dup2(fd[0], STDIN_FILENO);
+			close(fd[0]);
+			close(fd[1]);
 			i++;
 		}
-		close_pipe(fd);
 	}
 	wait_all_childs(i - 2);
 }
