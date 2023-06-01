@@ -3,6 +3,12 @@
 # Object files
 *.o
 
+# vscode
+.vscode
+
+# .d files
+*.d
+
 # Libraries
 *.lib
 *.a

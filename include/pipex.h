@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:38:32 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/05/31 16:57:40 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/01 10:49:35 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,9 @@ typedef struct s_pipe
 	char	**env;
 }			t_pipe;
 
-# include "libft.h"
+void		pipe_commands(t_pipe *p);
+void		close_pipe(int *fd);
+void		free_split(char **cmd);
+char		**get_cmd(char *full_cmd, char **env);
 
 #endif
