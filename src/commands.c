@@ -6,25 +6,11 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 20:16:24 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/02 10:05:30 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/02 10:56:33 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-//delete after
-void	print_t_cmd(t_cmd *cmd)
-{
-	if (cmd->cmd != NULL)
-	{
-		printf("CMD: ");
-		for (int i = 0; cmd->cmd[i] != NULL; i++)
-			printf("%s ", cmd->cmd[i]);
-		printf("\n");
-	}
-	printf("HAS_PIPE: %d\n", cmd->has_pipe);
-	printf("RAW_CMD: %s\n", cmd->raw_cmd);
-}
 
 t_cmd	*new_cmd(char *raw_cmd, int has_pipe)
 {
