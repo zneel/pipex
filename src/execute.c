@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 20:17:40 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/02 01:09:04 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/02 10:54:46 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,30 +23,27 @@
  */
 void	wait_for_cmds(t_list *cmds)
 {
-	t_cmd	*cmd;
-
 	while (cmds)
 	{
-		cmd = cmds->content;
-		waitpid(cmd->pid, 0, 0);
+		waitpid(-1, 0, 0);
 		cmds = cmds->next;
 	}
 }
 
-void	do_pipes(int fd[2], pid_t *pid)
+void	do_pipes(int fd[2], pid_t pid)
 {
-	if (*pid == 0)
+	if (pid == 0)
 	{
+		close(fd[0]);
 		if (dup2(fd[1], STDOUT_FILENO) == -1)
 			perror("dup2 child");
-		close(fd[0]);
 		close(fd[1]);
 	}
 	else
 	{
+		close(fd[1]);
 		if (dup2(fd[0], STDIN_FILENO) == -1)
 			perror("dup2 parent");
-		close(fd[1]);
 		close(fd[0]);
 	}
 }
@@ -61,7 +58,7 @@ void	do_pipes(int fd[2], pid_t *pid)
  * @param pid Pointer to store the child process ID.
  * @return 1 on success, 0 on failure.
  */
-int	pipe_fork(t_cmd *cmd, pid_t *pid, int fd[2])
+int	pipe_fork(t_cmd *cmd, pid_t *pid, int fd[2], t_pipe *p)
 {
 	if (cmd->has_pipe && pipe(fd) != 0)
 	{
@@ -74,9 +71,10 @@ int	pipe_fork(t_cmd *cmd, pid_t *pid, int fd[2])
 		perror("fork");
 		return (0);
 	}
-	do_pipes(fd, pid);
-	if (*pid != 0)
-		cmd->pid = *pid;
+	if (cmd->has_pipe)
+		do_pipes(fd, *pid);
+	else
+		dup2(p->fd2, STDOUT_FILENO);
 	return (1);
 }
 
@@ -96,6 +94,4 @@ void	execute(t_cmd *cmd, char **env)
 		perror(cmd->cmd[0]);
 		exit(errno);
 	}
-	cmd_clean(cmd);
-	exit(0);
 }

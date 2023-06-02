@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:41:37 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/02 01:10:35 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/02 10:40:24 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ int	parse_av(int ac, char **av, char **env, t_pipe *p)
 	p->av = av;
 	p->env = env;
 	dup2(p->fd1, STDIN_FILENO);
-	dup2(p->fd2, STDOUT_FILENO);
 	return (0);
 }
 

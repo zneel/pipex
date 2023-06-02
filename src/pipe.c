@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 08:56:11 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/02 01:07:03 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/02 10:54:39 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,17 +54,18 @@ void	pipex(t_pipe *p)
 
 	cmds = parse_cmds(p);
 	if (!cmds)
-		exit(1);
+		exit(errno);
 	curr_cmd = cmds;
 	while (curr_cmd)
 	{
 		cmd = curr_cmd->content;
-		if (!pipe_fork(cmd, &pid, fd))
+		if (!pipe_fork(cmd, &pid, fd, p))
 			return (cmds_clean(cmds), exit(errno));
 		if (pid == 0)
 			execute(cmd, p->env);
 		curr_cmd = curr_cmd->next;
 	}
+	close(STDIN_FILENO);
 	wait_for_cmds(cmds);
 	cmds_clean(cmds);
 }

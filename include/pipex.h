@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:38:32 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/01 23:53:57 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/02 10:50:41 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ typedef struct s_pipe
 
 typedef struct s_cmd
 {
-	pid_t	pid;
 	char	**cmd;
 	char	*raw_cmd;
 	int		has_pipe;
@@ -51,7 +50,7 @@ void		cmd_clean(t_cmd *cmd);
 void		cmds_clean(t_list *cmds);
 void		execute(t_cmd *cmd, char **env);
 int			add_cmd(t_list **cmds, t_cmd *cmd);
-int			pipe_fork(t_cmd *cmd, pid_t *pid, int fd[2]);
+int			pipe_fork(t_cmd *cmd, pid_t *pid, int fd[2], t_pipe *p);
 void		wait_for_cmds(t_list *cmds);
 
 #endif

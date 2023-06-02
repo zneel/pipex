@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 20:16:24 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/01 23:54:07 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/02 10:05:30 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 //delete after
 void	print_t_cmd(t_cmd *cmd)
 {
-	printf("PID: %d\n", cmd->pid);
 	if (cmd->cmd != NULL)
 	{
 		printf("CMD: ");
@@ -37,7 +36,6 @@ t_cmd	*new_cmd(char *raw_cmd, int has_pipe)
 	new_cmd->cmd = NULL;
 	new_cmd->has_pipe = has_pipe;
 	new_cmd->raw_cmd = ft_strdup(raw_cmd);
-	new_cmd->pid = -1;
 	return (new_cmd);
 }
 void	cmd_clean(t_cmd *cmd)
