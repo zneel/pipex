@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:41:37 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/02 10:40:24 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/02 11:09:22 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	check_args(int ac)
 	if (ac < 5)
 	{
 		print_usage();
-		exit(0);
+		exit(1);
 	}
 }
 
@@ -45,10 +45,13 @@ int	parse_av(int ac, char **av, char **env, t_pipe *p)
 int	main(int ac, char **av, char **env)
 {
 	t_pipe	p;
+	int		stin;
 
+	stin = dup(STDIN_FILENO);
 	check_args(ac);
 	if (parse_av(ac, av, env, &p) < 0)
 		exit(errno);
 	pipex(&p);
+	dup2(stin, STDIN_FILENO);
 	return (0);
 }

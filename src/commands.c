@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 20:16:24 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/02 10:56:33 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/02 11:11:36 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ t_cmd	*new_cmd(char *raw_cmd, int has_pipe)
 	new_cmd->raw_cmd = ft_strdup(raw_cmd);
 	return (new_cmd);
 }
+
 void	cmd_clean(t_cmd *cmd)
 {
 	free(cmd->raw_cmd);

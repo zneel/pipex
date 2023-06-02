@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 20:17:40 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/02 10:54:46 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/02 11:11:40 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void	do_pipes(int fd[2], pid_t pid)
 		close(fd[0]);
 	}
 }
+
 /**
  * @brief Initializes a command structure and creates a child process.
  *
