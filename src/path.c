@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 08:42:07 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/02 11:10:59 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/03 18:08:38 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ char	*join_cmd(char *cmd, char **env)
 	i = 0;
 	while (env[i])
 	{
-		if (ft_strncmp(env[i], "PATH", 4) == 0)
+		if (ft_strncmp(env[i], "PATH=", 5) == 0)
 		{
 			paths = split_paths(env[i]);
 			if (!paths)

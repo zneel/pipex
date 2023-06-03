@@ -6,22 +6,13 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 08:56:11 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/02 10:54:39 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/03 17:59:24 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 #include <stdio.h>
 
-/**
- * @brief Parses commands from a pipe structure.
- *
- * Extracts commands from the given pipe structure and creates a linked list
- * of command structures.
- *
- * @param p Pointer to the pipe structure containing the command arguments.
- * @return Pointer to the linked list of commands, or NULL on error.
- */
 t_list	*parse_cmds(t_pipe *p)
 {
 	t_list	*cmds;
@@ -52,6 +43,8 @@ void	pipex(t_pipe *p)
 	t_cmd	*cmd;
 	int		fd[2];
 
+	dup2(p->fdin, 0);
+	close(p->fdin);
 	cmds = parse_cmds(p);
 	if (!cmds)
 		exit(errno);
@@ -65,7 +58,10 @@ void	pipex(t_pipe *p)
 			execute(cmd, p->env);
 		curr_cmd = curr_cmd->next;
 	}
-	close(STDIN_FILENO);
+	dup2(p->in_save, 0);
+	dup2(p->out_save, 1);
+	close(p->in_save);
+	close(p->out_save);
 	wait_for_cmds(cmds);
 	cmds_clean(cmds);
 }

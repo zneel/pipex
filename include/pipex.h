@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:38:32 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/02 10:50:41 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/03 17:42:44 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,14 @@
 
 typedef struct s_pipe
 {
-	int		fd1;
-	int		fd2;
+	int		fdin;
+	int		fdout;
 	char	*limiter;
 	int		ac;
 	char	**av;
 	char	**env;
+	int		in_save;
+	int		out_save;
 }			t_pipe;
 
 typedef struct s_cmd
