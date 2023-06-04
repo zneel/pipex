@@ -21,6 +21,7 @@
 
 # Executables
 pipex
+pipex_bonus
 
 # Temporary files
 *.swp
