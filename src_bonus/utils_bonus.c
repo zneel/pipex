@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   utils_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 08:57:24 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/04 16:20:22 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/04 20:44:33 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	close_pipe(int *fd)
+void	close_pipe(int fd[2])
 {
-	if (fd[0] > 0)
-		close(fd[0]);
-	if (fd[1] > 0)
-		close(fd[1]);
+	if (fd[READ] > 0)
+		close(fd[READ]);
+	if (fd[WRITE] > 0)
+		close(fd[WRITE]);
 }
 
 void	free_split(char **cmd)

@@ -1,37 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   usage_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/01 08:57:24 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/04 16:20:22 by ebouvier         ###   ########.fr       */
+/*   Created: 2023/06/04 16:46:29 by ebouvier          #+#    #+#             */
+/*   Updated: 2023/06/04 21:09:24 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	close_pipe(int *fd)
+void	print_usage(void)
 {
-	if (fd[0] > 0)
-		close(fd[0]);
-	if (fd[1] > 0)
-		close(fd[1]);
+	write(2, "usage: ./pipex_bonus infile cmd1 cmd2 cmdN outfile\n", 52);
 }
 
-void	free_split(char **cmd)
+void	print_here_doc(void)
 {
-	int	i;
-
-	i = 0;
-	while (cmd[i])
-		free(cmd[i++]);
-	free(cmd);
+	write(2, "usage: ./pipex_bonus here_doc LIMITER cmd1 cmd2 outfile\n", 57);
 }
 
-void	exit_error(int fd[2])
+void	check_args_bonus(int ac, char **av)
 {
-	close_pipe(fd);
-	exit(errno);
+	if (ac < 4)
+	{
+		print_usage();
+		print_here_doc();
+		exit(1);
+	}
+	else if (ac != 6 && check_here_doc(av[1]))
+	{
+		print_here_doc();
+		exit(1);
+	}
 }

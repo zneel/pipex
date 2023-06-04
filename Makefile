@@ -1,5 +1,5 @@
 NAME = pipex
-BONUS = pipex
+BONUS = pipex_bonus
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -MMD
@@ -11,8 +11,22 @@ SRC =	src/main.c \
 		src/utils.c \
 		src/commands.c \
 		src/execute.c \
+		src/pipes.c
+
+SRC_BONUS = src_bonus/main_bonus.c \
+			src_bonus/path_bonus.c \
+			src_bonus/pipe_bonus.c \
+			src_bonus/utils_bonus.c \
+			src_bonus/commands_bonus.c \
+			src_bonus/execute_bonus.c \
+			src_bonus/pipes_bonus.c \
+			src_bonus/here_doc_bonus.c \
+			src_bonus/usage_bonus.c
 
 OBJ = $(SRC:.c=.o)
+OBJ_BONUS = $(SRC_BONUS:.c=.o)
+MMD = $(SRC:.c=.d)
+
 LIBRARY = libft/libft.a
 
 ifeq ($(DEBUG), 1)
@@ -24,6 +38,7 @@ ifeq ($(SAN), 1)
 endif
 
 all: $(NAME)
+bonus: $(BONUS)
 
 $(NAME): $(OBJ) $(LIBRARY)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(NAME) $(OBJ) $(LIBRARY)
@@ -32,18 +47,19 @@ $(NAME): $(OBJ) $(LIBRARY)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(LIBRARY):
-	$(MAKE) -j8 -C libft
+	$(MAKE) -j8 -C  libft
 
-bonus: $(BONUS)
+$(BONUS): $(OBJ_BONUS) $(LIBRARY)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $(BONUS) $(OBJ_BONUS) $(LIBRARY)
 
 clean:
-	rm -f $(OBJ)
+	rm -f $(OBJ) $(OBJ_BONUS) $(MMD)
 	$(MAKE) -C libft clean
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(NAME) $(BONUS)
 	$(MAKE) -C libft fclean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipe.c                                             :+:      :+:    :+:   */
+/*   pipe_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 08:56:11 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/04 16:31:26 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/04 21:07:03 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@ t_list	*parse_cmds(t_pipe *p)
 	int		i;
 	int		has_pipe;
 
-	i = 2;
+	if (p->here_doc == 1)
+		i = 3;
+	else
+		i = 2;
 	cmds = NULL;
 	while (i < p->ac - 1)
 	{
@@ -50,8 +53,8 @@ void	pipex(t_pipe *p)
 	cmds = parse_cmds(p);
 	if (!cmds)
 		exit(errno);
-	prepare_fd(p);
 	curr_cmd = cmds;
+	prepare_fd(p);
 	while (curr_cmd)
 	{
 		if (((t_cmd *)curr_cmd->content)->has_pipe)

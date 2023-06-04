@@ -1,37 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   pipex_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/01 08:57:24 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/04 16:20:22 by ebouvier         ###   ########.fr       */
+/*   Created: 2023/06/04 16:41:53 by ebouvier          #+#    #+#             */
+/*   Updated: 2023/06/04 20:22:34 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
-
-void	close_pipe(int *fd)
-{
-	if (fd[0] > 0)
-		close(fd[0]);
-	if (fd[1] > 0)
-		close(fd[1]);
-}
-
-void	free_split(char **cmd)
-{
-	int	i;
-
-	i = 0;
-	while (cmd[i])
-		free(cmd[i++]);
-	free(cmd);
-}
-
-void	exit_error(int fd[2])
-{
-	close_pipe(fd);
-	exit(errno);
-}
+#ifndef PIPEX_BONUS_H
+# define PIPEX_BONUS_H
+# include "pipex_struct.h"
+# define HERE_DOC_PATH "/tmp/here_doc.tmp"
+int		check_here_doc(char *av);
+void	check_args_bonus(int ac, char **av);
+void	handle_here_doc(t_pipe *p);
+#endif

@@ -1,37 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   pipex_struct.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/01 08:57:24 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/04 16:20:22 by ebouvier         ###   ########.fr       */
+/*   Created: 2023/06/04 17:24:39 by ebouvier          #+#    #+#             */
+/*   Updated: 2023/06/04 19:37:14 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#ifndef PIPEX_STRUCT_H
+#define PIPEX_STRUCT_H
 
-void	close_pipe(int *fd)
+typedef struct s_pipe
 {
-	if (fd[0] > 0)
-		close(fd[0]);
-	if (fd[1] > 0)
-		close(fd[1]);
-}
+	int		fd_in;
+	int		fd_out;
+	char	*limiter;
+	int		here_doc;
+	int		ac;
+	int		previous_out;
+	char	**av;
+	char	**env;
+	int		in_save;
+}			t_pipe;
 
-void	free_split(char **cmd)
+typedef struct s_cmd
 {
-	int	i;
-
-	i = 0;
-	while (cmd[i])
-		free(cmd[i++]);
-	free(cmd);
-}
-
-void	exit_error(int fd[2])
-{
-	close_pipe(fd);
-	exit(errno);
-}
+	char	**cmd;
+	char	*raw_cmd;
+	int		has_pipe;
+	int		index;
+}			t_cmd;
+#endif
