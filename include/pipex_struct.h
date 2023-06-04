@@ -6,12 +6,12 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 17:24:39 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/04 19:37:14 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/04 21:25:19 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_STRUCT_H
-#define PIPEX_STRUCT_H
+# define PIPEX_STRUCT_H
 
 typedef struct s_pipe
 {
@@ -33,4 +33,5 @@ typedef struct s_cmd
 	int		has_pipe;
 	int		index;
 }			t_cmd;
+
 #endif
