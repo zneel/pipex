@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:41:37 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 00:49:42 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 01:08:39 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,6 @@ void	init_pipe(t_pipe *p)
 	p->last_status = 0;
 	p->limiter = NULL;
 	p->previous_out = -1;
-}
-
-void	print_usage(void)
-{
-	write(2, "usage: ./pipex infile cmd1 cmd2 outfile\n", 41);
-}
-
-void	check_args(int ac)
-{
-	if (ac != 5)
-	{
-		print_usage();
-		exit(1);
-	}
 }
 
 int	parse_av(int ac, char **av, char **env, t_pipe *p)

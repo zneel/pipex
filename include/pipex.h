@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:38:32 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 16:34:55 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 16:36:01 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	pipe_for_child(int old_read_pipe, int pipe_fd[2]);
 void	pipe_for_last(int pipe_fd[2], t_pipe *p);
 void	pipe_exec(t_cmd *cmd, int pipe_fd[2], t_pipe *p, t_list *cmds);
 void	prepare_fd(t_pipe *p);
-
+void	check_args(int ac);
 void	print_usage(void);
 void	print_here_doc(void);
 

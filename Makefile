@@ -11,7 +11,8 @@ SRC =	src/main.c \
 		src/utils.c \
 		src/commands.c \
 		src/execute.c \
-		src/pipes.c
+		src/pipes.c \
+		src/usage.c
 
 SRC_BONUS = src_bonus/main_bonus.c \
 			src_bonus/path_bonus.c \
