@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 08:56:11 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/04 16:31:26 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 00:50:27 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,6 @@ t_list	*parse_cmds(t_pipe *p)
 	return (cmds);
 }
 
-void	prepare_fd(t_pipe *p)
-{
-	dup2(p->fd_in, 0);
-	close(p->fd_in);
-}
-
 void	pipex(t_pipe *p)
 {
 	t_list	*cmds;
@@ -50,7 +44,6 @@ void	pipex(t_pipe *p)
 	cmds = parse_cmds(p);
 	if (!cmds)
 		exit(errno);
-	prepare_fd(p);
 	curr_cmd = cmds;
 	while (curr_cmd)
 	{
@@ -58,12 +51,12 @@ void	pipex(t_pipe *p)
 			pipe(pipe_fd);
 		pid = fork();
 		if (pid == 0)
-			pipe_exec((t_cmd *)curr_cmd->content, pipe_fd, p);
+			pipe_exec((t_cmd *)curr_cmd->content, pipe_fd, p, cmds);
 		if (((t_cmd *)curr_cmd->content)->has_pipe)
 			p->previous_out = pipe_fd[READ];
 		curr_cmd = curr_cmd->next;
 	}
 	close_pipe(pipe_fd);
-	wait_for_cmds(cmds);
+	wait_for_cmds(cmds, p);
 	cmds_clean(cmds);
 }

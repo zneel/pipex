@@ -6,11 +6,17 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:14:43 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/04 16:20:00 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 00:50:57 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+void	prepare_fd(t_pipe *p)
+{
+	dup2(p->fd_in, 0);
+	close(p->fd_in);
+}
 
 void	pipe_for_first(int pipe_fd[2])
 {
