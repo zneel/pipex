@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:32:45 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 23:08:15 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 23:10:03 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ void	here_doc_prompt(int fd, t_pipe *p)
 {
 	char	*line;
 
+	ft_putstr_fd("pipe heredoc> ", 1);
 	line = get_next_line(0);
 	while (line)
 	{
@@ -67,7 +68,6 @@ void	handle_here_doc(t_pipe *p)
 	if (fd < 0)
 		exit(errno);
 	p->limiter = ft_strdup(p->av[2]);
-	ft_putstr_fd("pipe heredoc> ", 1);
 	here_doc_prompt(fd, p);
 	close(fd);
 	fd = open(HERE_DOC_PATH, O_RDONLY);

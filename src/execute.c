@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 20:17:40 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 22:54:12 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 23:52:58 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,12 @@ void	execute(t_list *cmds, t_cmd *cmd, t_pipe *p)
 
 void	pipe_exec(t_cmd *cmd, int pipes[2][2], t_pipe *p, t_list *cmds)
 {
-	if (cmd->index == 0)
+	int cmd_index;
+
+	cmd_index = cmd->index;
+	if (p->here_doc)
+		cmd_index--;
+	if (cmd_index == 0)
 	{
 		close(p->fd_out);
 		pipe_for_first(pipes[NEW], p->fd_in);

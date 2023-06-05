@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 08:56:11 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 23:04:04 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 23:42:05 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_list	*parse_cmds(t_pipe *p)
 	int		i;
 	int		has_pipe;
 
-	if (p->here_doc)
+	if (p->here_doc == 1)
 		i = 3;
 	else
 		i = 2;
