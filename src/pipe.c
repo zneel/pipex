@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 08:56:11 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 22:49:46 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 23:04:04 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,23 @@ t_list	*parse_cmds(t_pipe *p)
 
 void	init_pipes(int pipes[2][2])
 {
-	
 	pipes[OLD][READ] = -1;
 	pipes[OLD][WRITE] = -1;
 	pipes[NEW][READ] = -1;
 	pipes[NEW][WRITE] = -1;
+}
+
+void	parent_handler(int has_pipe, int pipes[2][2])
+{
+	close_if_open(pipes[OLD][READ]);
+	if (has_pipe)
+	{
+		pipes[OLD][READ] = pipes[NEW][READ];
+		pipes[NEW][READ] = -1;
+		close_if_open(pipes[NEW][WRITE]);
+	}
+	else
+		pipes[OLD][READ] = -1;
 }
 
 int	exec_all_commands(t_list *cmds, t_pipe *p)
@@ -56,23 +68,16 @@ int	exec_all_commands(t_list *cmds, t_pipe *p)
 	init_pipes(pipes);
 	while (curr_cmd)
 	{
-        if (((t_cmd*)(curr_cmd->content))->has_pipe)
-            if (pipe(pipes[NEW]) == -1)
-                return (0);
-        pid = fork();
-        if (pid == -1)
-            return (0);
-        else if (pid == 0)
-            pipe_exec(curr_cmd->content, pipes, p, cmds);
-		close_if_open(pipes[OLD][READ]);
-        if (((t_cmd*)(curr_cmd->content))->has_pipe)
-        {
-            pipes[OLD][READ] = pipes[NEW][READ];
-            pipes[NEW][READ] = -1;
-            close_if_open(pipes[NEW][WRITE]);
-        }
-        else
-			pipes[OLD][READ] = -1;
+		if (((t_cmd *)(curr_cmd->content))->has_pipe)
+			if (pipe(pipes[NEW]) == -1)
+				return (0);
+		pid = fork();
+		if (pid == -1)
+			return (0);
+		else if (pid == 0)
+			pipe_exec(curr_cmd->content, pipes, p, cmds);
+		else
+			parent_handler(((t_cmd *)(curr_cmd->content))->has_pipe, pipes);
 		curr_cmd = curr_cmd->next;
 	}
 	return (1);

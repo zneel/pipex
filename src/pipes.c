@@ -6,13 +6,13 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:14:43 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 22:47:52 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 23:04:11 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void close_if_open(int fd)
+void	close_if_open(int fd)
 {
 	if (fd >= 0)
 		close(fd);
