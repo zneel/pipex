@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 20:17:40 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 16:35:13 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 16:36:40 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,10 @@ void	pipe_exec(t_cmd *cmd, int pipe_fd[2], t_pipe *p, t_list *cmds)
 	if (cmd->index == 0)
 	{
 		prepare_fd(p);
-		pipe_for_first(pipe_fd);
+		pipe_for_first(pipe_fd, p);
 	}
 	else if (cmd->has_pipe)
-		pipe_for_child(p->previous_out, pipe_fd);
+		pipe_for_child(p->previous_out, pipe_fd, p);
 	else
 		pipe_for_last(pipe_fd, p);
 	execute(cmds, cmd, p);
