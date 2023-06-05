@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:38:32 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 16:36:28 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 22:49:29 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@
 
 # define READ 0
 # define WRITE 1
+# define OLD 0
+# define NEW 1
 
 void	pipex(t_pipe *p);
 void	close_pipe(int fd[2]);
@@ -37,13 +39,13 @@ void	cmd_clean(t_cmd *cmd);
 void	cmds_clean(t_list *cmds);
 int		add_cmd(t_list **cmds, t_cmd *cmd);
 void	wait_for_cmds(t_list *cmds, t_pipe *p);
-void	pipe_for_first(int pipe_fd[2], t_pipe *p);
-void	pipe_for_child(int old_read_pipe, int pipe_fd[2], t_pipe *p);
-void	pipe_for_last(int pipe_fd[2], t_pipe *p);
-void	pipe_exec(t_cmd *cmd, int pipe_fd[2], t_pipe *p, t_list *cmds);
-void	prepare_fd(t_pipe *p);
+void	pipe_for_first(int pipe_fd[2], int fd_in);
+void	pipe_for_child(int new_pipe[2], int old_pipe[2]);
+void	pipe_for_last(int old_pipe[2], int fd_out);
+void	pipe_exec(t_cmd *cmd, int pipe_fd[2][2], t_pipe *p, t_list *cmds);
 void	check_args(int ac);
 void	print_usage(void);
 void	print_here_doc(void);
+void	close_if_open(int fd);
 
 #endif

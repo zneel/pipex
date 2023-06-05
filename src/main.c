@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:41:37 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 01:08:39 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 22:06:32 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,9 @@ void	init_pipe(t_pipe *p)
 	p->env = NULL;
 	p->fd_in = -1;
 	p->fd_out = -1;
-	p->in_save = -1;
 	p->here_doc = 0;
 	p->last_status = 0;
 	p->limiter = NULL;
-	p->previous_out = -1;
 }
 
 int	parse_av(int ac, char **av, char **env, t_pipe *p)
@@ -38,15 +36,14 @@ int	parse_av(int ac, char **av, char **env, t_pipe *p)
 		perror("filedes error");
 		return (-1);
 	}
-	p->in_save = dup(0);
 	return (0);
 }
 
-void	cleanup(t_pipe *p)
+void	cleanup(t_pipe *p, int old_stdin)
 {
 	close(p->fd_in);
-	dup2(p->in_save, 0);
-	close(p->in_save);
+	dup2(old_stdin, 0);
+	close(old_stdin);
 	close(p->fd_out);
 	if (WIFEXITED(p->last_status))
 		exit(WEXITSTATUS(p->last_status));
@@ -55,12 +52,14 @@ void	cleanup(t_pipe *p)
 int	main(int ac, char **av, char **env)
 {
 	t_pipe	p;
+	int		old_stdin;
 
+	old_stdin = dup(0);
 	check_args(ac);
 	init_pipe(&p);
 	if (parse_av(ac, av, env, &p) < 0)
 		exit(errno);
 	pipex(&p);
-	cleanup(&p);
+	cleanup(&p, old_stdin);
 	return (0);
 }

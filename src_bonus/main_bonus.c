@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:41:37 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 00:49:42 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 22:53:21 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,9 @@ void	init_pipe(t_pipe *p)
 	p->env = NULL;
 	p->fd_in = -1;
 	p->fd_out = -1;
-	p->in_save = -1;
 	p->here_doc = 0;
 	p->last_status = 0;
 	p->limiter = NULL;
-	p->previous_out = -1;
 }
 
 int	parse_av(int ac, char **av, char **env, t_pipe *p)
@@ -43,15 +41,12 @@ int	parse_av(int ac, char **av, char **env, t_pipe *p)
 		perror("filedes error");
 		return (-1);
 	}
-	p->in_save = dup(0);
 	return (0);
 }
 
 void	cleanup(t_pipe *p)
 {
 	close(p->fd_in);
-	dup2(p->in_save, 0);
-	close(p->in_save);
 	close(p->fd_out);
 	if (p->here_doc)
 	{

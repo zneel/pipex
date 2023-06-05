@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 20:17:40 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 16:36:40 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 22:54:12 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ void	execute(t_list *cmds, t_cmd *cmd, t_pipe *p)
 	{
 		cmds_clean(cmds);
 		perror("command not found");
-		close(p->fd_in);
 		exit(errno);
 	}
 	cmd->cmd = full_cmd;
@@ -40,24 +39,27 @@ void	execute(t_list *cmds, t_cmd *cmd, t_pipe *p)
 	{
 		cmds_clean(cmds);
 		perror("command error");
-		close(p->fd_in);
 		exit(errno);
 	}
 }
 
-void	pipe_exec(t_cmd *cmd, int pipe_fd[2], t_pipe *p, t_list *cmds)
+void	pipe_exec(t_cmd *cmd, int pipes[2][2], t_pipe *p, t_list *cmds)
 {
-	close(p->in_save);
-	if (cmd->has_pipe)
-		close(p->fd_out);
 	if (cmd->index == 0)
 	{
-		prepare_fd(p);
-		pipe_for_first(pipe_fd, p);
+		close(p->fd_out);
+		pipe_for_first(pipes[NEW], p->fd_in);
 	}
 	else if (cmd->has_pipe)
-		pipe_for_child(p->previous_out, pipe_fd, p);
+	{
+		close(p->fd_in);
+		close(p->fd_out);
+		pipe_for_child(pipes[NEW], pipes[OLD]);
+	}
 	else
-		pipe_for_last(pipe_fd, p);
+	{
+		close(p->fd_in);
+		pipe_for_last(pipes[OLD], p->fd_out);
+	}
 	execute(cmds, cmd, p);
 }

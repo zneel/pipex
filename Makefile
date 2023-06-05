@@ -15,12 +15,12 @@ SRC =	src/main.c \
 		src/usage.c
 
 SRC_BONUS = src_bonus/main_bonus.c \
-			src_bonus/path_bonus.c \
-			src_bonus/pipe_bonus.c \
+			src/path.c \
+			src/pipe.c \
+			src/commands.c \
+			src/execute.c \
+			src/pipes.c \
 			src_bonus/utils_bonus.c \
-			src_bonus/commands_bonus.c \
-			src_bonus/execute_bonus.c \
-			src_bonus/pipes_bonus.c \
 			src_bonus/here_doc_bonus.c \
 			src_bonus/usage_bonus.c
 

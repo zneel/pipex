@@ -6,38 +6,42 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:14:43 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 16:36:30 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 22:47:52 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	prepare_fd(t_pipe *p)
+void close_if_open(int fd)
 {
-	dup2(p->fd_in, 0);
-	close(p->fd_in);
+	if (fd >= 0)
+		close(fd);
 }
 
-void	pipe_for_first(int pipe_fd[2], t_pipe *p)
+void	pipe_for_first(int pipe_fd[2], int fd_in)
 {
-	close(p->fd_out);
+	dup2(fd_in, STDIN_FILENO);
+	close_if_open(fd_in);
+	close_if_open(pipe_fd[READ]);
 	dup2(pipe_fd[WRITE], STDOUT_FILENO);
-	close_pipe(pipe_fd);
+	close_if_open(pipe_fd[WRITE]);
 }
 
-void	pipe_for_child(int old_read_pipe, int pipe_fd[2], t_pipe *p)
+void	pipe_for_child(int new_pipe[2], int old_pipe[2])
 {
-	close(p->fd_out);
-	dup2(old_read_pipe, STDIN_FILENO);
-	dup2(pipe_fd[WRITE], STDOUT_FILENO);
-	close_pipe(pipe_fd);
-	close(old_read_pipe);
+	close_if_open(old_pipe[WRITE]);
+	dup2(old_pipe[READ], STDIN_FILENO);
+	close_if_open(old_pipe[READ]);
+	close_if_open(new_pipe[READ]);
+	dup2(new_pipe[WRITE], STDOUT_FILENO);
+	close_if_open(new_pipe[WRITE]);
 }
 
-void	pipe_for_last(int pipe_fd[2], t_pipe *p)
+void	pipe_for_last(int old_pipe[2], int fd_out)
 {
-	dup2(p->fd_out, STDOUT_FILENO);
-	dup2(pipe_fd[READ], STDIN_FILENO);
-	close(p->fd_out);
-	close_pipe(pipe_fd);
+	close_if_open(old_pipe[WRITE]);
+	dup2(old_pipe[READ], STDIN_FILENO);
+	close_if_open(old_pipe[READ]);
+	dup2(fd_out, STDOUT_FILENO);
+	close_if_open(fd_out);
 }

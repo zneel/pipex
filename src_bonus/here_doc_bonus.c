@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 16:32:45 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/04 20:24:14 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 22:53:14 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,4 @@ void	handle_here_doc(t_pipe *p)
 	ft_putstr_fd("pipe heredoc> ", 1);
 	here_doc_prompt(fd, p);
 	close(fd);
-	fd = open(HERE_DOC_PATH, O_RDONLY);
-	p->fd_in = fd;
 }

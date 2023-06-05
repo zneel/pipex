@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 08:56:11 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 00:50:27 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 22:49:46 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@ t_list	*parse_cmds(t_pipe *p)
 	int		i;
 	int		has_pipe;
 
-	i = 2;
+	if (p->here_doc)
+		i = 3;
+	else
+		i = 2;
 	cmds = NULL;
 	while (i < p->ac - 1)
 	{
@@ -34,29 +37,59 @@ t_list	*parse_cmds(t_pipe *p)
 	return (cmds);
 }
 
+void	init_pipes(int pipes[2][2])
+{
+	
+	pipes[OLD][READ] = -1;
+	pipes[OLD][WRITE] = -1;
+	pipes[NEW][READ] = -1;
+	pipes[NEW][WRITE] = -1;
+}
+
+int	exec_all_commands(t_list *cmds, t_pipe *p)
+{
+	t_list	*curr_cmd;
+	int		pid;
+	int		pipes[2][2];
+
+	curr_cmd = cmds;
+	init_pipes(pipes);
+	while (curr_cmd)
+	{
+        if (((t_cmd*)(curr_cmd->content))->has_pipe)
+            if (pipe(pipes[NEW]) == -1)
+                return (0);
+        pid = fork();
+        if (pid == -1)
+            return (0);
+        else if (pid == 0)
+            pipe_exec(curr_cmd->content, pipes, p, cmds);
+		close_if_open(pipes[OLD][READ]);
+        if (((t_cmd*)(curr_cmd->content))->has_pipe)
+        {
+            pipes[OLD][READ] = pipes[NEW][READ];
+            pipes[NEW][READ] = -1;
+            close_if_open(pipes[NEW][WRITE]);
+        }
+        else
+			pipes[OLD][READ] = -1;
+		curr_cmd = curr_cmd->next;
+	}
+	return (1);
+}
+
 void	pipex(t_pipe *p)
 {
 	t_list	*cmds;
-	t_list	*curr_cmd;
-	pid_t	pid;
-	int		pipe_fd[2];
 
 	cmds = parse_cmds(p);
 	if (!cmds)
 		exit(errno);
-	curr_cmd = cmds;
-	while (curr_cmd)
+	if (!exec_all_commands(cmds, p))
 	{
-		if (((t_cmd *)curr_cmd->content)->has_pipe)
-			pipe(pipe_fd);
-		pid = fork();
-		if (pid == 0)
-			pipe_exec((t_cmd *)curr_cmd->content, pipe_fd, p, cmds);
-		if (((t_cmd *)curr_cmd->content)->has_pipe)
-			p->previous_out = pipe_fd[READ];
-		curr_cmd = curr_cmd->next;
+		cmds_clean(cmds);
+		exit(errno);
 	}
-	close_pipe(pipe_fd);
 	wait_for_cmds(cmds, p);
 	cmds_clean(cmds);
 }
