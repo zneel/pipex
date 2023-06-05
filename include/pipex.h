@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:38:32 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/04 20:44:56 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/05 16:32:33 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ void	cmds_clean(t_list *cmds);
 void	execute(t_cmd *cmd, char **env);
 int		add_cmd(t_list **cmds, t_cmd *cmd);
 void	wait_for_cmds(t_list *cmds);
-void	pipe_for_first(int pipe_fd[2]);
-void	pipe_for_child(int old_read_pipe, int pipe_fd[2]);
+void	pipe_for_first(int pipe_fd[2], t_pipe *p);
+void	pipe_for_child(int old_read_pipe, int pipe_fd[2], t_pipe *p);
 void	pipe_for_last(int pipe_fd[2], t_pipe *p);
 void	pipe_exec(t_cmd *cmd, int pipe_fd[2], t_pipe *p);
 
