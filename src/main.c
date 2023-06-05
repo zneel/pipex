@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:41:37 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 22:06:32 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/06 00:08:59 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ int	parse_av(int ac, char **av, char **env, t_pipe *p)
 	p->fd_out = open(p->av[p->ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (p->fd_in < 0 || p->fd_out < 0)
 	{
+		close_if_open(p->fd_in);
+		close_if_open(p->fd_out);
 		perror("filedes error");
 		return (-1);
 	}
