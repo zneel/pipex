@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 20:17:40 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/05 23:58:36 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/24 13:45:56 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ void	execute(t_list *cmds, t_cmd *cmd, t_pipe *p)
 	if (!full_cmd || !*full_cmd)
 	{
 		cmds_clean(cmds);
-		if (p->here_doc)
-			free(p->limiter);
 		perror("command not found");
 		exit(errno);
 	}
@@ -40,8 +38,6 @@ void	execute(t_list *cmds, t_cmd *cmd, t_pipe *p)
 	if (err == -1)
 	{
 		cmds_clean(cmds);
-		if (p->here_doc)
-			free(p->limiter);
 		perror("command error");
 		exit(errno);
 	}

@@ -6,7 +6,7 @@
 /*   By: ebouvier <ebouvier@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 11:41:37 by ebouvier          #+#    #+#             */
-/*   Updated: 2023/06/06 00:08:59 by ebouvier         ###   ########.fr       */
+/*   Updated: 2023/06/24 13:57:37 by ebouvier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,9 @@ int	parse_av(int ac, char **av, char **env, t_pipe *p)
 	return (0);
 }
 
-void	cleanup(t_pipe *p, int old_stdin)
+void	cleanup(t_pipe *p)
 {
 	close(p->fd_in);
-	dup2(old_stdin, 0);
-	close(old_stdin);
 	close(p->fd_out);
 	if (WIFEXITED(p->last_status))
 		exit(WEXITSTATUS(p->last_status));
@@ -54,14 +52,12 @@ void	cleanup(t_pipe *p, int old_stdin)
 int	main(int ac, char **av, char **env)
 {
 	t_pipe	p;
-	int		old_stdin;
 
-	old_stdin = dup(0);
 	check_args(ac);
 	init_pipe(&p);
 	if (parse_av(ac, av, env, &p) < 0)
 		exit(errno);
 	pipex(&p);
-	cleanup(&p, old_stdin);
+	cleanup(&p);
 	return (0);
 }
